@@ -68,7 +68,6 @@ void loop() {
     Serial.print(grade);
     Serial.println(" grade");
     
-    // Miscam panoul catre dreapta:
     // Prin setarea starii pinului 8 la HIGH si pinului 7 la LOW, motorul se va deplasa la dreapta
     digitalWrite(in1, HIGH);
     digitalWrite(in2, LOW);
@@ -84,8 +83,7 @@ void loop() {
     Serial.print(grade);
     Serial.println(" grade");
     
-    // Miscam panoul catre stanga:
-    // Prin setarea starii ambilor pini la LOW, motorul se va opri
+    // Prin setarea starii pinului 8 la LOW si pinului 7 la HIGH, motorul se va deplasa la stanga
     digitalWrite(in1, LOW);
     digitalWrite(in2, HIGH);
     analogWrite(enA, SPEED); // Viteza motorului
@@ -100,8 +98,7 @@ void loop() {
     Serial.print(grade);
     Serial.println(" grade");
     
-    // Panoul se va opri:
-    // Prin setarea starii pinului 8 la LOW si pinului 7 la HIGH, motorul se va deplasa la stanga
+    // Prin setarea starii ambilor pini la LOW, motorul se va opri
     digitalWrite(in1, LOW);
     digitalWrite(in2, LOW);
     analogWrite(enA, 0); // Setez viteza motorului la 0
