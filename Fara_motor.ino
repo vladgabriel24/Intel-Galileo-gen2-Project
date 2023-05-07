@@ -2,16 +2,16 @@
 #define PRAG 1.20f // Valoarea in modul a pragului impus pentru miscarea panoului
 #define TIMESTAMP 1000 // Cuanta de timp in milisecunde
 
-int sensorPin0 = A0; // Pinul ce va primi tensiunea de la fotodioda din dreapta -> pinul A0
-int sensorPin1 = A1; // Pinul ce va primi tensiunea de la fotodioda din stanga -> pinul A1
+int sensorPin0 = A0; // Pinul ce va primi tensiunea de la fotodioda din stanga -> pinul A0
+int sensorPin1 = A1; // Pinul ce va primi tensiunea de la fotodioda din dreapta -> pinul A1
 
-int sensorValue0; // valoarea citita de pinul A0 <=> valoarea tensiunii prin fotorezistorul din dreapta
-int sensorValue1; // valoarea citita de pinul A1 <=> valoarea tensiunii prin fotorezistorul din stanga
+int sensorValue0; // valoarea citita de pinul A0 <=> valoarea tensiunii prin fotorezistorul din stanga
+int sensorValue1; // valoarea citita de pinul A1 <=> valoarea tensiunii prin fotorezistorul din dreapta
 
-float voltage0; // valoarea tensiunii prin fotorezistorul din dreapta, convertita in volti
-float voltage1; // valoarea tensiunii prin fotorezistorul din stanga, convertita in volti
+float voltage0; // valoarea tensiunii prin fotorezistorul din stanga, convertita in volti
+float voltage1; // valoarea tensiunii prin fotorezistorul din dreapta, convertita in volti
 
-float diff; // diferenta dintre tensiunea data de fotorez din dreapta si cea data de fotorez din stanga
+float diff; // diferenta dintre tensiunea data de fotorez din stanga si cea data de fotorez din dreapta
 
 int contor = MAX_VAL/2; // contorul ce va exprima pozitia de la 0 la 180 grade
                         // valoarea 0 va corespunde pozitiei de 0 grade
@@ -25,10 +25,10 @@ void setup() {
 
 void loop() {
   
-  sensorValue0 = analogRead(sensorPin0); // citim tensiunea de pe fotorez din dreapta
-  sensorValue1 = analogRead(sensorPin1); // citim tensiunea de pe fotorez din stanga
+  sensorValue0 = analogRead(sensorPin0); // citim tensiunea de pe fotorez din stanga
+  sensorValue1 = analogRead(sensorPin1); // citim tensiunea de pe fotorez din dreapta
 
-  voltage0 = sensorValue0 * (5.0/1023.0); // convertim valoarea citita (tens pe fotorez din dreapta), in volti
+  voltage0 = sensorValue0 * (5.0/1023.0); // convertim valoarea citita (tens pe fotorez din stanga), in volti
   voltage1 = sensorValue1 * (5.0/1023.0); // convertim valoarea citita (tens pe fotorez din dreapta), in volti
   
   // Afisam tensiunile celor doua fotorez
@@ -40,7 +40,7 @@ void loop() {
   Serial.print(voltage1);
   Serial.println("V");
 
-  // Calculam diferenta intre tensiunea care cade pe fotorez din dreapta si cea care cade pe fotorez din stanga
+  // Calculam diferenta intre tensiunea care cade pe fotorez din stanga si cea care cade pe fotorez din dreapta
   diff = voltage0 - voltage1;
 
   // Daca diferenta trece de un anumit prag pozitiv si pozitia panoului nu a ajuns la 180 grade
