@@ -16,9 +16,9 @@ float voltage1; // valoarea tensiunii prin fotorezistorul din dreapta, convertit
 
 float diff; // diferenta dintre tensiunea data de fotorez din dreapta si cea data de fotorez din stanga
 
-int contor = 0; // contorul ce va exprima pozitia de la 0 la 180 grade
-                        // valoarea 0 va corespunde pozitiei de 0 grade
-                        // valoarea MAX_VAL va corespunde pozitiei de 180 grade
+int contor = MAX_VAL/2; // contorul ce va exprima pozitia de la -90 la 90 grade
+                        // valoarea 0 va corespunde pozitiei de -90 grade
+                        // valoarea MAX_VAL va corespunde pozitiei de 90 grade
 
 int prag_stanga, prag_dreapta;
 
@@ -108,7 +108,7 @@ void loop() {
   // Calculam diferenta intre tensiunea care cade pe fotorez din stanga si cea care cade pe fotorez din dreapta
   diff = voltage0 - voltage1;
 
-  // Daca diferenta trece de un anumit prag pozitiv si pozitia panoului nu a ajuns la 180 grade
+  // Daca diferenta trece de un anumit prag pozitiv si pozitia panoului nu a ajuns la 90 grade
   if(diff >= PRAG && contor < MAX_VAL)
   {
     if(voltage1 <= 1.80f) prag_dreapta = MAX_VAL;
@@ -120,7 +120,7 @@ void loop() {
       Serial.println("DREAPTA!"); // Afisam string-ul "DREAPTA!" pe seriala
       miscare_panou_dreapta();
       
-      contor++; // Crestem contorul (crestem gradele catre 180)
+      contor++; // Crestem contorul (crestem gradele catre 90)
       grade = grade + unit_grade;
     }
     else
@@ -130,7 +130,7 @@ void loop() {
     }
     print_unghi_pozitie();
   }
-  else if(diff <= -PRAG && contor > 0) // Daca diferenta trece de un anumit prag negativ si panoul nu este la 0 grade
+  else if(diff <= -PRAG && contor > 0) // Daca diferenta trece de un anumit prag negativ si panoul nu este la -90 grade
   {
     if(voltage0 <= 1.80f) prag_stanga = 0;
     if(voltage0 <= 2.70f && voltage0 > 1.80f) prag_stanga = 0 + (MAX_VAL/4);
@@ -141,7 +141,7 @@ void loop() {
       Serial.println("STANGA!"); // Afisam string-ul "STANGA!" pe seriala
       miscare_panou_stanga();
 
-      contor--; // Scadem contorul (scadem gradele catre 0)
+      contor--; // Scadem contorul (scadem gradele catre -90)
       grade = grade - unit_grade;
     }
     else 
@@ -158,7 +158,7 @@ void loop() {
       Serial.println("STANGA!"); // Afisam string-ul "STANGA!" pe seriala
       miscare_panou_stanga();
 
-      contor--; // Scadem contorul (scadem gradele catre 0)
+      contor--; // Scadem contorul (scadem gradele catre -90)
       grade = grade - unit_grade;
     }
     else if(contor < MAX_VAL/2)
