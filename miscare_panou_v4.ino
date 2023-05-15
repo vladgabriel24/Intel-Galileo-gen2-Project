@@ -21,7 +21,7 @@ int contor = MAX_VAL/2; // contorul ce va exprima pozitia de la -90 la +90 grade
                         // valoarea MAX_VAL va corespunde pozitiei de +90 grade
                         // valoarea MAX_VAL/2 va corespunde pozitiei de 0 grade (pozitia neutra)
 
-int prag_intuneric = 4.80f; // Valoarea tensiunii de pe fotorezistor ce semnifica faptul ca se afla intr-un loc intunecat
+float prag_intuneric = 4.80f; // Valoarea tensiunii de pe fotorezistor ce semnifica faptul ca se afla intr-un loc intunecat
 
 // Pinii de control pentru L298N
 int enA = 9; // pinul 9
