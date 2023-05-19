@@ -1,12 +1,12 @@
 #include <LiquidCrystal.h>
 
-#define MAX_VAL 20   // Valoarea maxima a contorului ce corespunde pozitiei de +180 grade a panoului solar
+#define MAX_VAL 20   // Valoarea maxima a contorului ce corespunde pozitiei de +90 grade a panoului solar
 #define PRAG 1.20f   // Valoarea in modul a pragului impus pentru miscarea panoului
 #define TIMESTAMP 20 // Cuanta de timp in milisecunde
 #define SPEED 170    // Viteza motorului
 
-int sensorPin0 = A0; // Pinul ce va primi tensiunea de la fotodioda din stanga -> pinul A0
-int sensorPin1 = A1; // Pinul ce va primi tensiunea de la fotodioda din dreapta -> pinul A1
+int sensorPin0 = A0; // Pinul ce va primi tensiunea de la fotorezistorul din stanga -> pinul A0
+int sensorPin1 = A1; // Pinul ce va primi tensiunea de la fotorezistorul din dreapta -> pinul A1
 
 int sensorValue0; // valoarea citita de pinul A0 <=> valoarea tensiunii prin fotorezistorul din stanga
 int sensorValue1; // valoarea citita de pinul A1 <=> valoarea tensiunii prin fotorezistorul din dreapta
@@ -14,29 +14,31 @@ int sensorValue1; // valoarea citita de pinul A1 <=> valoarea tensiunii prin fot
 float voltage0; // valoarea tensiunii prin fotorezistorul din stanga, convertita in volti
 float voltage1; // valoarea tensiunii prin fotorezistorul din dreapta, convertita in volti
 
-float diff; // diferenta dintre tensiunea data de fotorez din dreapta si cea data de fotorez din stanga
+float diff; // diferenta dintre tensiunea data de fotorezistorul din stanga si cea data de fotorezistorul din dreapta
 
 int contor = MAX_VAL / 2; // contorul ce va exprima pozitia de la -90 la +90 grade
                           // valoarea 0 va corespunde pozitiei de -90 grade
-                          // valoarea MAX_VAL va corespunde pozitiei de +90 grade
                           // valoarea MAX_VAL/2 va corespunde pozitiei de 0 grade (pozitia neutra)
+                          // valoarea MAX_VAL va corespunde pozitiei de +90 grade
 
 float prag_intuneric = 4.80f; // Valoarea tensiunii de pe fotorezistor ce semnifica faptul ca se afla intr-un loc intunecat
 
-// Pinii de control pentru L298N
+// Pinii de control pentru driver-ul motorului, L298N
 int enA = 9; // pinul 9
 int in1 = 8; // pinul 8
 int in2 = 7; // pinul 7
 
 // ! Atentie: Cu motorul luat cu partea neagra spre tine
-// OUT2 vine in dreapta motorului
-// OUT1 in stanga
+// OUT2 din driver vine in dreapta motorului
+// OUT1 din driver in stanga
 
 int unit_grade = 180 / MAX_VAL; // Unitatea cu care se va adauga/scadea valoarea in grade in timpul miscarii
 int grade = 0;                  // Initializam valoarea in grade la 0 (pozitia neutra)
 
+// Initializarea LCD-ului impreuna cu pinii lui aferenti
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 // Legaturile sunt efectuate in modul urmator:
 // VSS la masa si VDD la 5V
 
@@ -55,7 +57,7 @@ void setup()
   Serial.begin(9600); // Initializam seriala cu bitrate-ul specific
   lcd.begin(16, 2);   // Initializam lcd-ul cu numarul de coloane si numarul de linii
 
-  // Setam toti pinii de control al L298N ca mod de operare = OUTPUT
+  // Setam toti pinii de control al L298N ca mod de operare OUTPUT
   pinMode(enA, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
@@ -111,13 +113,13 @@ void lcd_print_pozitie(int grade)
 void loop()
 {
 
-  sensorValue0 = analogRead(sensorPin0); // citim tensiunea de pe fotorez din stanga
-  sensorValue1 = analogRead(sensorPin1); // citim tensiunea de pe fotorez din dreapta
+  sensorValue0 = analogRead(sensorPin0); // citim tensiunea de pe fotorezistorul din stanga
+  sensorValue1 = analogRead(sensorPin1); // citim tensiunea de pe fotorezistorul din dreapta
 
-  voltage0 = sensorValue0 * (5.0 / 1023.0); // convertim valoarea citita (tens pe fotorez din stanga), in volti
-  voltage1 = sensorValue1 * (5.0 / 1023.0); // convertim valoarea citita (tens pe fotorez din dreapta), in volti
+  voltage0 = sensorValue0 * (5.0 / 1023.0); // convertim valoarea citita (tens pe fotorezistorul din stanga), in volti
+  voltage1 = sensorValue1 * (5.0 / 1023.0); // convertim valoarea citita (tens pe fotorezistorul din dreapta), in volti
 
-  // Afisam tensiunile celor doua fotorez
+  // Afisam tensiunile celor doua fotorezistoare
   Serial.print("A0: ");
   Serial.print(voltage0);
   Serial.println("V");
@@ -126,7 +128,7 @@ void loop()
   Serial.print(voltage1);
   Serial.println("V");
 
-  // Calculam diferenta intre tensiunea care cade pe fotorez din stanga si cea care cade pe fotorez din dreapta
+  // Calculam diferenta intre tensiunea care cade pe fotorezistorul din stanga si cea care cade pe fotorezistorul din dreapta
   diff = voltage0 - voltage1;
 
   // Daca diferenta trece de un anumit prag pozitiv
@@ -176,7 +178,7 @@ void loop()
 
           miscare_panou_stanga();
           contor--;                   // Scadem contorul
-          grade = grade - unit_grade; // Scadem gradele catre -90
+          grade = grade - unit_grade; // Scadem gradele catre 0
 
           lcd_print_pozitie(grade);
           delay(TIMESTAMP); // Pentru a se pastra metrica timpului
@@ -190,7 +192,7 @@ void loop()
 
           miscare_panou_dreapta();
           contor++;                   // Crestem contorul
-          grade = grade + unit_grade; // Crestem gradele catre -90
+          grade = grade + unit_grade; // Crestem gradele catre 0
 
           lcd_print_pozitie(grade);
           delay(TIMESTAMP); // Pentru a se pastra metrica timpului
